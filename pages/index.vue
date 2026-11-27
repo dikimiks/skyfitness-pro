@@ -144,6 +144,10 @@ const handleAddCourse = async (courseId: string) => {
   }
 };
 
+const handleAuthSuccess = () => {
+  isAuthModalOpen.value = false;
+};
+
 onMounted(() => {
   loadCourses();
   window.addEventListener("scroll", handleScroll);
