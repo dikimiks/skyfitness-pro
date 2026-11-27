@@ -93,6 +93,13 @@
 
           <div v-if="loading" class="text-gray-500">Загрузка курсов...</div>
 
+          <div
+            v-else-if="error"
+            class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl"
+          >
+            {{ error }}
+          </div>
+
           <div v-else-if="!myCourses.length" class="text-gray-500">
             У вас пока нет добавленных курсов
           </div>
@@ -146,6 +153,7 @@ const api = useApi();
 const allCourses = ref<Course[]>([]);
 const progressMap = ref<Record<string, number>>({});
 const loading = ref(true);
+const error = ref<string | null>(null);
 const deletingId = ref<string | null>(null);
 const resettingId = ref<string | null>(null);
 
@@ -185,11 +193,12 @@ const loadProgress = async () => {
 const loadCourses = async () => {
   try {
     loading.value = true;
+    error.value = null;
     const data = await api.getCourses();
     allCourses.value = data;
     await loadProgress();
   } catch (err: unknown) {
-    console.error("Ошибка загрузки курсов:", getErrorMessage(err));
+    error.value = getErrorMessage(err, "Не удалось загрузить курсы");
   } finally {
     loading.value = false;
   }
